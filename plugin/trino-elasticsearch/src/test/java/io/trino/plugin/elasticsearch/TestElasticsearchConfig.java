@@ -35,6 +35,7 @@ public class TestElasticsearchConfig
     public void testDefaults()
     {
         assertRecordedDefaults(recordDefaults(ElasticsearchConfig.class)
+                .setAggregationPushdownEnabled(false)
                 .setHost(null)
                 .setPort(9200)
                 .setDefaultSchema("default")
@@ -64,6 +65,7 @@ public class TestElasticsearchConfig
         Path truststoreFile = Files.createTempFile(null, null);
 
         Map<String, String> properties = new ImmutableMap.Builder<String, String>()
+                .put("aggregation-pushdown.enabled", "true")
                 .put("elasticsearch.host", "example.com")
                 .put("elasticsearch.port", "9999")
                 .put("elasticsearch.default-schema-name", "test")
@@ -86,6 +88,7 @@ public class TestElasticsearchConfig
                 .build();
 
         ElasticsearchConfig expected = new ElasticsearchConfig()
+                .setAggregationPushdownEnabled(true)
                 .setHost("example.com")
                 .setPort(9999)
                 .setDefaultSchema("test")

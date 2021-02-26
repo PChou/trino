@@ -300,6 +300,24 @@ public final class DateTimeFunctions
         throw new TrinoException(INVALID_FUNCTION_ARGUMENT, "'" + unitString + "' is not a valid DATE field");
     }
 
+    public static DateTimeField getFixedTimestampField(ISOChronology chronology, Slice unit)
+    {
+        String unitString = unit.toStringUtf8().toLowerCase(ENGLISH);
+        switch (unitString) {
+            case "millisecond":
+                return chronology.millisOfSecond();
+            case "second":
+                return chronology.secondOfMinute();
+            case "minute":
+                return chronology.minuteOfHour();
+            case "hour":
+                return chronology.hourOfDay();
+            case "day":
+                return chronology.dayOfMonth();
+        }
+        throw new TrinoException(INVALID_FUNCTION_ARGUMENT, "'" + unitString + "' is not a valid Timestamp field");
+    }
+
     public static DateTimeField getTimestampField(ISOChronology chronology, Slice unit)
     {
         String unitString = unit.toStringUtf8().toLowerCase(ENGLISH);

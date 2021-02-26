@@ -1837,6 +1837,16 @@ public class TestTime
     }
 
     @Test
+    public void testDateAlign()
+    {
+        assertThat(assertions.expression("date_align('minute', 5, TIMESTAMP '2020-03-05 12:34:56')")).matches("TIMESTAMP '2020-03-05 12:30:00'");
+        assertThat(assertions.expression("date_align('minute', 10, TIMESTAMP '2020-03-05 12:34:56')")).matches("TIMESTAMP '2020-03-05 12:30:00'");
+        assertThat(assertions.expression("date_align('minute', 20, TIMESTAMP '2020-03-05 12:34:56')")).matches("TIMESTAMP '2020-03-05 12:20:00'");
+        assertThat(assertions.expression("date_align('hour', 1, TIMESTAMP '2020-03-05 12:34:56')")).matches("TIMESTAMP '2020-03-05 12:00:00'");
+        assertThat(assertions.expression("date_align('day', 1, TIMESTAMP '2020-03-05 12:34:56')")).matches("TIMESTAMP '2020-03-05 00:00:00'");
+    }
+
+    @Test
     public void testDateTrunc()
     {
         assertThat(assertions.expression("date_trunc('millisecond', TIME '12:34:56')")).matches("TIME '12:34:56'");

@@ -160,6 +160,7 @@ import io.trino.operator.scalar.time.TimeToTimeWithTimeZoneCast;
 import io.trino.operator.scalar.time.TimeToTimestampCast;
 import io.trino.operator.scalar.time.TimeToTimestampWithTimeZoneCast;
 import io.trino.operator.scalar.timestamp.DateAdd;
+import io.trino.operator.scalar.timestamp.DateAlign;
 import io.trino.operator.scalar.timestamp.DateDiff;
 import io.trino.operator.scalar.timestamp.DateFormat;
 import io.trino.operator.scalar.timestamp.DateToTimestampCast;
@@ -641,6 +642,7 @@ public class FunctionRegistry
                 .scalar(SequenceIntervalYearToMonth.class)
                 .scalar(SequenceIntervalDayToSecond.class)
                 .scalar(DateAdd.class)
+                .scalar(DateAlign.class)
                 .scalar(DateDiff.class)
                 .scalar(ExtractYear.class)
                 .scalar(ExtractQuarter.class)

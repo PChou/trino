@@ -32,6 +32,9 @@ import io.trino.GroupByHashPageIndexerFactory;
 import io.trino.PagesIndexPageSorter;
 import io.trino.SystemSessionProperties;
 import io.trino.block.BlockJsonSerde;
+import io.trino.catalog.ZookeeperCatalogResource;
+import io.trino.catalog.ZookeeperCatalogStore;
+import io.trino.catalog.ZookeeperCatalogStoreConfig;
 import io.trino.client.NodeVersion;
 import io.trino.client.ServerInfo;
 import io.trino.connector.ConnectorManager;
@@ -351,6 +354,9 @@ public class ServerMainModule
         // metadata
         binder.bind(StaticCatalogStore.class).in(Scopes.SINGLETON);
         configBinder(binder).bindConfig(StaticCatalogStoreConfig.class);
+        binder.bind(ZookeeperCatalogStore.class).in(Scopes.SINGLETON);
+        configBinder(binder).bindConfig(ZookeeperCatalogStoreConfig.class);
+
         binder.bind(MetadataManager.class).in(Scopes.SINGLETON);
         binder.bind(Metadata.class).to(MetadataManager.class).in(Scopes.SINGLETON);
         binder.bind(TypeOperatorsCache.class).in(Scopes.SINGLETON);
@@ -407,6 +413,9 @@ public class ServerMainModule
         // node status resource
         jaxrsBinder(binder).bind(StatusResource.class);
         jsonCodecBinder(binder).bindJsonCodec(NodeStatus.class);
+
+        // zookeeper catalog resource
+        jaxrsBinder(binder).bind(ZookeeperCatalogResource.class);
 
         // plugin manager
         binder.bind(PluginManager.class).in(Scopes.SINGLETON);

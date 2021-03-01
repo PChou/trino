@@ -34,6 +34,7 @@ import io.airlift.log.LogJmxModule;
 import io.airlift.log.Logger;
 import io.airlift.node.NodeModule;
 import io.airlift.tracetoken.TraceTokenModule;
+import io.trino.catalog.ZookeeperCatalogStore;
 import io.trino.client.NodeVersion;
 import io.trino.eventlistener.EventListenerManager;
 import io.trino.eventlistener.EventListenerModule;
@@ -116,7 +117,12 @@ public class Server
 
             injector.getInstance(PluginManager.class).loadPlugins();
 
-            injector.getInstance(StaticCatalogStore.class).loadCatalogs();
+            ZookeeperCatalogStore dynamicCatalogStore = injector.getInstance(ZookeeperCatalogStore.class);
+            if (dynamicCatalogStore.isEnabledDynamic()) {
+                dynamicCatalogStore.loadCatalogs();
+            } else {
+                injector.getInstance(StaticCatalogStore.class).loadCatalogs();
+            }
 
             // TODO: remove this huge hack
             updateConnectorIds(injector.getInstance(Announcer.class), injector.getInstance(CatalogManager.class));

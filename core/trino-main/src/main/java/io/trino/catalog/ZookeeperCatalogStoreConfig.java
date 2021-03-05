@@ -21,52 +21,61 @@ public class ZookeeperCatalogStoreConfig
     private CuratorFramework curatorFramework;
 
     @Config("catalog.dynamic.enabled")
-    public ZookeeperCatalogStoreConfig setDynamicEnabled(String dynamicEnabled) {
+    public ZookeeperCatalogStoreConfig setDynamicEnabled(String dynamicEnabled)
+    {
         this.dynamicEnabled = dynamicEnabled;
         return this;
     }
 
-    public boolean getDynamicEnabled() {
+    public boolean getDynamicEnabled()
+    {
         return Boolean.parseBoolean(Objects.requireNonNullElse(dynamicEnabled, "false"));
     }
 
     @Config("catalog.zk.address")
-    public ZookeeperCatalogStoreConfig setCatalogZkAddress(String zkAddress) {
+    public ZookeeperCatalogStoreConfig setCatalogZkAddress(String zkAddress)
+    {
         this.zkAddress = zkAddress;
         return this;
     }
 
-    public String getCatalogZkAddress() {
+    public String getCatalogZkAddress()
+    {
         return Objects.requireNonNullElse(zkAddress, "127.0.0.1:2181");
     }
 
     @Config("catalog.zk.namespace")
-    public ZookeeperCatalogStoreConfig setCatalogZkNamespace(String namespace) {
+    public ZookeeperCatalogStoreConfig setCatalogZkNamespace(String namespace)
+    {
         this.namespace = namespace;
         return this;
     }
 
-    public String getCatalogZkNamespace() {
+    public String getCatalogZkNamespace()
+    {
         return Objects.requireNonNullElse(namespace, "trino");
     }
 
-
     @Config("catalog.zk.path")
-    public ZookeeperCatalogStoreConfig setCatalogZkPath(String nodePath) {
+    public ZookeeperCatalogStoreConfig setCatalogZkPath(String nodePath)
+    {
         this.nodePath = nodePath;
         return this;
     }
 
-    public String getCatalogZkPath() {
+    public String getCatalogZkPath()
+    {
         return Objects.requireNonNullElse(nodePath, "/catalog/meta");
     }
 
-    public CuratorFramework getCuratorFramework() {
+    public CuratorFramework getCuratorFramework()
+    {
         createCuratorFramework();
         return curatorFramework;
     }
 
-    private synchronized void createCuratorFramework() {
+    private synchronized void createCuratorFramework()
+    {
         if (Objects.isNull(curatorFramework)) {
             requireNonNull(zkAddress, "zookeeper address is null");
             requireNonNull(nodePath, "zookeeper nodePath info is null");
@@ -82,5 +91,4 @@ public class ZookeeperCatalogStoreConfig
             curatorFramework.start();
         }
     }
-
 }

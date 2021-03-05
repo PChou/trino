@@ -2301,6 +2301,12 @@ class StatementAnalyzer
                     throw semanticException(NESTED_WINDOW, windowFunctions.get(0), "HAVING clause cannot contain window functions");
                 }
 
+                IdentityRewriteExpressionVisitor.IdentityMap c = IdentityRewriteExpressionVisitor.IdentityMap.fromQuery(node);
+                IdentityRewriteExpressionVisitor walk = new IdentityRewriteExpressionVisitor();
+                Expression rewrite = walk.process(predicate, c);
+                if (rewrite != null) {
+                    predicate = rewrite;
+                }
                 ExpressionAnalysis expressionAnalysis = analyzeExpression(predicate, scope);
                 analysis.recordSubqueries(node, expressionAnalysis);
 
@@ -2361,6 +2367,9 @@ class StatementAnalyzer
                 ImmutableList.Builder<Expression> complexExpressions = ImmutableList.builder();
                 ImmutableList.Builder<Expression> groupingExpressions = ImmutableList.builder();
 
+                IdentityRewriteExpressionVisitor.IdentityMap c = IdentityRewriteExpressionVisitor.IdentityMap.fromQuery(node);
+                IdentityRewriteExpressionVisitor walk = new IdentityRewriteExpressionVisitor();
+
                 checkGroupingSetsCount(node.getGroupBy().get());
                 for (GroupingElement groupingElement : node.getGroupBy().get().getGroupingElements()) {
                     if (groupingElement instanceof SimpleGroupBy) {
@@ -2375,6 +2384,10 @@ class StatementAnalyzer
                                 column = outputExpressions.get(toIntExact(ordinal - 1));
                             }
                             else {
+                                Expression rewrite = walk.process(column, c);
+                                if (rewrite != null) {
+                                    column = rewrite;
+                                }
                                 verifyNoAggregateWindowOrGroupingFunctions(metadata, column, "GROUP BY clause");
                                 analyzeExpression(column, scope);
                             }
@@ -3343,7 +3356,8 @@ class StatementAnalyzer
             return scope.withRelationType(newDescriptor);
         }
 
-        private void verifySelectDistinct(QuerySpecification node, List<Expression> orderByExpressions, List<Expression> outputExpressions, Scope sourceScope, Scope orderByScope)
+        private void verifySelectDistinct(QuerySpecification node, List<Expression> orderByExpressions, List<Expression> outputExpressions, Scope sourceScope, Scope
+                orderByScope)
         {
             Set<CanonicalizationAware<Identifier>> aliases = getAliases(node.getSelect());
 
